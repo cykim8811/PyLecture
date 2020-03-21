@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "SDL.h"
 #include <iostream>
+#include "call.h"
 
 using namespace std;
 
@@ -11,7 +12,7 @@ public:
 	void Tick(float dT);
 	void Draw(SDL_Renderer* renderer);
 	int Event(SDL_Event event);
-	char* Command(char* cmd, vector<int> args);
+	char* Command(int cmd, vector<int> args);
 
 	char* get_name() { return "Grid"; }
 	int get_width() { return 32 * 30; }
@@ -21,3 +22,4 @@ public:
 	float display[30 * 20]{ 0 };
 };
 
+extern vector<call> call_list;

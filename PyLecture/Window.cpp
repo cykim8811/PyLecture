@@ -23,6 +23,8 @@ static PyObject* WindowNew(PyTypeObject* type, PyObject* args) {
 static int run_tick(void *arg) {
     WindowObject* self = (WindowObject*)arg;
 
+    int last_command = 0;
+
     self->window = SDL_CreateWindow(
         self->engine->get_name(),
         SDL_WINDOWPOS_CENTERED,
@@ -52,6 +54,11 @@ static int run_tick(void *arg) {
             if (self->engine->Event(ev) < 0) {
                 return 0;
             }
+        }
+        while (call_list.size() > last_command) {
+            call c = call_list[last_command];
+            self->engine->Command(c.cmd, c.params);
+            last_command++;
         }
         SDL_Delay(100);
         //std::this_thread::sleep_for(0.1s);
@@ -125,3 +132,5 @@ PyTypeObject WindowType{
     0,                              /* tp_free */
     0,                              /* tp_is_gc */
 };
+
+vector<call> call_list;

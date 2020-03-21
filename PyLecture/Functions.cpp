@@ -33,7 +33,20 @@ PyObject* PyLecture_on(PyObject* self, PyObject* args) {
         return NULL;
     }
     vector<int> arg = { x, y };
-    cout << global_window->engine->Command("on", arg) << endl;
+    // cout << global_window->engine->Command("on", arg) << endl;
+    call_list.push_back(call{ 0, {x, y} });
+
+    Py_RETURN_NONE;
+}
+
+PyObject* PyLecture_off(PyObject* self, PyObject* args) {
+    int x, y;
+    if (!PyArg_ParseTuple(args, "ii", &x, &y)) {
+        return NULL;
+    }
+    vector<int> arg = { x, y };
+    // cout << global_window->engine->Command("off", arg) << endl;
+    call_list.push_back(call{ 1, {x, y} });
 
     Py_RETURN_NONE;
 }

@@ -1,5 +1,4 @@
 from distutils.core import setup, Extension
-import numpy
 
 import os
 
@@ -14,6 +13,6 @@ setup(name = 'PyLecture', version = '0.1.0',
                     library_dirs = ["./SDL2/lib/x64"],
                     libraries = ["SDL2"]
           )],
-      include_dirs = [numpy.get_include(), "./SDL2/include"],
+      include_dirs = ["./SDL2/include"],
       data_files=[('', ['SDL2.dll'])]
 )

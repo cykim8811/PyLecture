@@ -44,5 +44,8 @@
     <ClInclude Include="GridEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="call.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,6 +7,7 @@
 #include "Engine.h"
 #include "GridEngine.h"
 #include "SDL_thread.h"
+#include "call.h"
 
 typedef struct WindowObject :PyObject {
     PyObject_HEAD
@@ -32,3 +33,5 @@ static PyMethodDef WindowMethods[] = {
 };
 
 extern PyTypeObject WindowType;
+
+extern vector<call> call_list;

@@ -198,6 +198,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="call.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="GridEngine.h" />
