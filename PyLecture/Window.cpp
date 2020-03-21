@@ -6,32 +6,78 @@ using namespace std;
 void WindowDealloc(WindowObject* self) {
     SDL_DestroyRenderer(self->renderer);
     SDL_DestroyWindow(self->window);
+    delete self->engine;
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject* WindowNew(PyTypeObject* type, PyObject* args, PyObject* kwds) {
+static PyObject* WindowNew(PyTypeObject* type, PyObject* args) {
     WindowObject* self;
     self = (WindowObject*)type->tp_alloc(type, 0);
-    if (self != NULL) {
-        self->window = SDL_CreateWindow(
-            "PyTetris",
-            SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED,
-            32 * 22, 32 * 22, 0
-        );
-        self->renderer = SDL_CreateRenderer(self->window, -1, SDL_RENDERER_ACCELERATED);
 
-        self->prevTime = SDL_GetTicks();
-        self->currTime = 0;
+    if (self != NULL) {
+
     }
     return (PyObject*)self;
 }
 
+static int run_tick(void *arg) {
+    WindowObject* self = (WindowObject*)arg;
+
+    self->window = SDL_CreateWindow(
+        self->engine->get_name(),
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
+        self->engine->get_width(),
+        self->engine->get_height(),
+        0
+    );
+    self->renderer = SDL_CreateRenderer(self->window, -1, SDL_RENDERER_ACCELERATED);
+
+    self->prevTime = SDL_GetTicks();
+    self->currTime = 0;
+
+    while (true) {
+        self->currTime = SDL_GetTicks();
+        float dT = float(self->currTime - self->prevTime) / 1000;
+        self->prevTime = self->currTime;
+
+        self->engine->Tick(dT);
+        SDL_SetRenderDrawColor(self->renderer, 255, 255, 255, 255);
+        SDL_RenderClear(self->renderer);
+        self->engine->Draw(self->renderer);
+        SDL_RenderPresent(self->renderer);
+
+        SDL_Event ev;
+        while (SDL_PollEvent(&ev)) {
+            if (self->engine->Event(ev) < 0) {
+                return 0;
+            }
+        }
+        SDL_Delay(100);
+        //std::this_thread::sleep_for(0.1s);
+    }
+}
+
 
 static int WindowInit(WindowObject* self, PyObject* args, PyObject* kwds) {
-    static char* kwlist[] = { NULL };
-    //if (!PyArg_ParseTupleAndKeywords(args, kwds, "", kwlist))
-    //    return -1;
+    static char* kwlist[] = { "type", NULL };
+    int t = 0;
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &t)) {
+        return NULL;
+    }
+
+    /*
+     *  Assign Engine for each type int
+     */
+    switch (t) {
+    case 0:
+        self->engine = new GridEngine();
+        break;
+    default:
+        break;
+    }
+    /* TODO: add thread to call engine's ftns */
+    self->thr = SDL_CreateThread(run_tick, "WindowThread", (void*)self);
 
     return 0;
 }
@@ -75,8 +121,7 @@ PyTypeObject WindowType{
     0,                              /* tp_dictoffset */
     (initproc) WindowInit,/* tp_init */
     0,                              /* tp_alloc */
-    WindowNew,              /* tp_new */
+    (newfunc) WindowNew,              /* tp_new */
     0,                              /* tp_free */
     0,                              /* tp_is_gc */
 };
-

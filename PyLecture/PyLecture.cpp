@@ -46,8 +46,6 @@ PyMODINIT_FUNC PyInit_PyLecture() {
     PyModule_AddIntConstant(module, "year", 2020);
 
     SDL_Init(SDL_INIT_EVERYTHING);
-    PyObject * module_window = PyObject_CallObject((PyObject*)&WindowType, NULL);
-    PyModule_AddObject(module, "window", module_window);
 
     return module;
 }

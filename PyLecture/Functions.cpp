@@ -1,22 +1,39 @@
 #include "Functions.h"
+#include "Window.h"
+#include <iostream>
 
-PyObject* PyLecture_example(PyObject* self, PyObject* args, PyObject* kwargs) {
-    /* Shared references that do not need Py_DECREF before returning. */
-    PyObject* obj = NULL;
-    int number = 0;
+using namespace std;
 
-    /* Parse positional and keyword arguments */
-    static char* keywords[] = { "obj", "number", NULL };
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oi", keywords, &obj, &number)) {
+static WindowObject* global_window;
+
+PyObject* PyLecture_Init(PyObject* self, PyObject* args) {
+    int type;
+    if (!PyArg_ParseTuple(args, "i", &type)) {
         return NULL;
     }
 
-    /* Function implementation starts here */
-
-    if (number < 0) {
-        PyErr_SetObject(PyExc_ValueError, obj);
-        return NULL;    /* return NULL indicates error */
+    if (type < 0) {
+        PyErr_SetString(PyExc_ValueError, "Invalid initialize type");
+        return NULL;
     }
+
+    PyObject* arg = Py_BuildValue("(i)", type);
+    PyObject* module_window = PyObject_CallObject((PyObject*)&WindowType, arg);
+    Py_DECREF(arg);
+    PyModule_AddObject(self, "window", module_window);
+
+    global_window = (WindowObject*)module_window;
+
+    Py_RETURN_NONE;
+}
+
+PyObject* PyLecture_on(PyObject* self, PyObject* args) {
+    int x, y;
+    if (!PyArg_ParseTuple(args, "ii", &x, &y)) {
+        return NULL;
+    }
+    vector<int> arg = { x, y };
+    cout << global_window->engine->Command("on", arg) << endl;
 
     Py_RETURN_NONE;
 }

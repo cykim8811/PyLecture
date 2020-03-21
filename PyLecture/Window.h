@@ -2,6 +2,11 @@
 #include <Python.h>
 #include "SDL.h"
 #include "structmember.h"
+#include <thread>
+#include <chrono>
+#include "Engine.h"
+#include "GridEngine.h"
+#include "SDL_thread.h"
 
 typedef struct WindowObject :PyObject {
     PyObject_HEAD
@@ -10,6 +15,9 @@ typedef struct WindowObject :PyObject {
 
     Uint32 prevTime;
     Uint32 currTime;
+
+    Engine* engine;
+    SDL_Thread* thr;
 };
 
 static PyMemberDef WindowMembers[] = {
