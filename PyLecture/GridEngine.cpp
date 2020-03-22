@@ -45,12 +45,13 @@ int GridEngine::Event(SDL_Event event) {
 	return 0;
 }
 
-char* GridEngine::Command(int cmd, vector<int> args) {
+int GridEngine::Command(int cmd, vector<int> args) {
 	if (cmd == 0) { // on
 		int x = args[0],
 			y = args[1];
 		if (x < 0 || x>30 || y < 0 || y>20) {
-			return "[Error]out of screen";
+			cout << "[Error]out of screen" << endl;
+			return -1;
 		}
 		data[x + y * 30] = 1;
 	}
@@ -58,10 +59,11 @@ char* GridEngine::Command(int cmd, vector<int> args) {
 		int x = args[0],
 			y = args[1];
 		if (x < 0 || x>30 || y < 0 || y>20) {
-			return "[Error]out of screen";
+			cout << "[Error]out of screen" << endl;
+			return -1;
 		}
 		data[x + y * 30] = 0;
 	}
 
-	return "";
+	return -1;
 }

@@ -191,6 +191,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ArrowEngine.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GridEngine.cpp" />
     <ClCompile Include="PyLecture.cpp" />
@@ -198,6 +199,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArrowEngine.h" />
     <ClInclude Include="call.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Functions.h" />

@@ -57,7 +57,8 @@ static int run_tick(void *arg) {
         }
         while (call_list.size() > last_command) {
             call c = call_list[last_command];
-            self->engine->Command(c.cmd, c.params);
+            int ret = self->engine->Command(c.cmd, c.params);
+            c.returns.push_back(ret);
             last_command++;
         }
         SDL_Delay(100);
@@ -79,6 +80,9 @@ static int WindowInit(WindowObject* self, PyObject* args, PyObject* kwds) {
     switch (t) {
     case 0:
         self->engine = new GridEngine();
+        break;
+    case 1:
+        self->engine = new ArrowEngine();
         break;
     default:
         break;
